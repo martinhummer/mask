@@ -75,35 +75,7 @@ class BackendLayoutRepository extends Repository
     {
         $backendLayouts = [];
 
-        // search all the pids for backend layouts defined in the pageTS
-        foreach ($pageTsPids as $pid) {
-            $pageTsConfig = (array)BackendUtility::getPagesTSconfig($pid);
-            $dataProviderContext = $this->backendLayoutView->createDataProviderContext()->setPageTsConfig($pageTsConfig);
-            $backendLayoutCollections = $this->backendLayoutView->getDataProviderCollection()->getBackendLayoutCollections($dataProviderContext);
-            foreach ($backendLayoutCollections['default']->getAll() as $backendLayout) {
-                $backendLayouts[$backendLayout->getIdentifier()] = $backendLayout;
-            }
-            foreach ($backendLayoutCollections['pagets']->getAll() as $backendLayout) {
-                $backendLayouts[$backendLayout->getIdentifier()] = $backendLayout;
-            }
-        }
-
-        // also search in the database for backendlayouts
-        $databaseBackendLayouts = parent::findAll();
-        /** @var \MASK\Mask\Domain\Model\BackendLayout $layout */
-        foreach ($databaseBackendLayouts as $layout) {
-            $backendLayout = new BackendLayout(
-                $layout->getUid(),
-                $layout->getTitle(),
-                [
-                    'backend_layout.' => [
-                        'rows.' => []
-                    ]
-                ]
-            );
-            $backendLayout->setDescription($layout->getDescription());
-            $backendLayouts[$backendLayout->getIdentifier()] = $backendLayout;
-        }
+        
         return $backendLayouts;
     }
 
